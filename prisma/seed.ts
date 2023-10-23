@@ -1,86 +1,72 @@
 /* eslint-disable prettier/prettier */
-import { PrismaClient } from '@prisma/client';
-const db = new PrismaClient();
-
-function getAuthors() {
-  return [
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
-      name: 'John Steinbeck',
-      country: 'USA',
-    },
-    {
-      id: 'c920c7b9-a67d-4edb-8ce7-e3c9f3889e56',
-      name: 'J. R. R. Tolkien',
-      country: 'UK',
-    },
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17258',
-      name: 'George Orwell',
-      country: 'UK',
-    },
-  ];
-}
-
-function getBooks() {
-  return [
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17260',
-      title: 'The Grapes of Wrath',
-      rating: 4,
-      price: 10,
-      authorId: 'fd105551-0f0d-4a9f-bc41-c559c8a17256',
-    },
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17261',
-      title: 'The Lord of the Rings',
-      rating: 5,
-      price: 15,
-      authorId: 'c920c7b9-a67d-4edb-8ce7-e3c9f3889e56',
-    },
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17262',
-      title: '1984',
-      rating: 5,
-      price: 12,
-      authorId: 'fd105551-0f0d-4a9f-bc41-c559c8a17258',
-    },
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17263',
-      title: 'Animal Farm',
-      rating: 4,
-      price: 11,
-      authorId: 'fd105551-0f0d-4a9f-bc41-c559c8a17258',
-    },
-    {
-      id: 'fd105551-0f0d-4a9f-bc41-c559c8a17264',
-      title: 'The Hobbit',
-      rating: 4,
-      price: 10,
-      authorId: 'c920c7b9-a67d-4edb-8ce7-e3c9f3889e56',
-    },
-  ];
-}
+import { PrismaClient, Color, Size } from '@prisma/client';
+const prisma = new PrismaClient();
 
 async function seed() {
-  await Promise.all(
-    getAuthors().map((author) => {
-      return db.author.create({ data: author });
-    }),
-  );
+  // Example: Create some products
+  const products = [
+    {
+      id: '1',
+      name: 'Product 1',
+      price: 10,
+      description: 'Description of Product 1',
+      shortDescription: 'Short description 1',
+      color: Color.Black,
+      size: Size.M,
+    },
+    {
+      id: '2',
+      name: 'Product 2',
+      price: 15,
+      description: 'Description of Product 2',
+      shortDescription: 'Short description 2',
+      color: Color.Red, // Should match one of the enum values (e.g., 'Red')
+      size: Size.M, // Should match one of the enum values (e.g., 'L')
+    },
+    // Add more products as needed
+  ];
 
   await Promise.all(
-    getBooks().map(({ authorId, ...orderData }) => {
-      return db.book.create({
-        data: {
-          ...orderData,
-          author: {
-            connect: { id: authorId },
-          },
-        },
+    products.map((product) => {
+      return prisma.product.create({
+        data: product,
       });
-    }),
+    })
   );
+
+  // Example: Create a cart for a user
+  const cart = {
+    id: '1', // Replace with the actual UUID
+    userId: '1', // The ID of the user who owns the cart
+    products: {
+      connect: [{ id: '1' }, { id: '2' }], // Connect products to the cart
+    },
+  };
+
+  await prisma.cart.create({
+    data: cart,
+  });
+
+  // Example: Create an order for a user
+  const order = {
+    id: '1', // Replace with the actual UUID
+    userId: '1', // The ID of the user who placed the order
+    products: {
+      connect: [{ id: '1' }, { id: '2' }], // Connect products to the order
+    },
+  };
+
+  await prisma.order.create({
+    data: order,
+  });
+
+  console.log('Seed data has been inserted.');
 }
 
-seed();
+seed()
+  .catch((error) => {
+    console.error('Error seeding the database:', error);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

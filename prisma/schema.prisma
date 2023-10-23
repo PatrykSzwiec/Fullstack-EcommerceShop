@@ -32,18 +32,18 @@ model Product {
   shortDescription String
   color Color
   size Size
-  images ProductImage[]
+  ///images ProductImage[]
 
   orders Order[]
   carts Cart[]
 }
 
-model ProductImage {
-  id String @id @unique
-  url String
-  product Product @relation(fields: [productId], references: [id])
-  productId String
-}
+///model ProductImage {
+ /// id String @id @unique
+ /// url String
+ //// product Product @relation(fields: [productId], references: [id])
+///  productId String
+///}
 
 model Order {
   id String @id @default(uuid()) @unique

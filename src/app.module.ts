@@ -15,7 +15,6 @@ import { PrismaModule } from './prisma/prisma.module';
 import { ConfigModule } from '@nestjs/config';
 import { CartModule } from './cart/cart.module';
 import { ProductModule } from './product/product.module';
-import { OrderController } from './order/order.controller';
 import { OrderModule } from './order/order.module';
 import configuration from './config/configuration';
 
@@ -24,15 +23,15 @@ import configuration from './config/configuration';
     CartModule,
     ProductModule,
     UsersModule,
+    OrderModule,
     AuthModule,
     PrismaModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
     }),
-    OrderModule,
   ],
-  controllers: [AppController, UsersController, OrderController],
+  controllers: [AppController, UsersController],
   providers: [AppService, UsersService],
 })
 export class AppModule implements NestModule {
