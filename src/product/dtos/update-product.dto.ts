@@ -42,15 +42,14 @@ export class UpdateProductDTO {
   shortDescription: string;
 
   @IsNotEmpty()
-  @IsEnum(Color) // Reference the Color enum defined in your application
+  @IsEnum(Color)
   color: Color;
 
   @IsNotEmpty()
-  @IsEnum(Size) // Reference the Size enum defined in your application
+  @IsEnum(Size)
   size: Size;
 
-  /*@IsArray()
+  @IsArray()
   @ArrayMinSize(1)
   images: string[];
-  */
 }
