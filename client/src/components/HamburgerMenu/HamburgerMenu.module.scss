@@ -1,0 +1,26 @@
+.hamburger_menu {
+  position: fixed;
+  top: 0;
+  left: -100%; /* Initial state is off-screen */
+  width: 70%; /* Adjust the width based on your design */
+  max-width: 320px; /* Set a maximum width if needed */
+  height: 100%; /* Covers the entire page height */
+  background: #000; /* Set your desired background color */
+  color: #fff; /* Text color */
+  padding: 2rem; /* Padding for menu items */
+  transition: left 0.3s ease; /* Add a smooth transition effect */
+  z-index: 10; /* Ensure it's on top of other content */
+}
+
+.hamburger_menu a {
+  display: block;
+  padding: 1rem 0;
+  text-decoration: none;
+  color: #fff;
+  font-size: 1.2rem; /* Adjust the font size */
+  transition: color 0.2s; /* Add a color transition effect */
+}
+
+.hamburger_menu a:hover {
+  color: #ff4500; /* Change color on hover */
+}
