@@ -1,6 +1,6 @@
 import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/views/Navbar/Navbar';
 import Article from './components/Article/Article';
 
 function App() {

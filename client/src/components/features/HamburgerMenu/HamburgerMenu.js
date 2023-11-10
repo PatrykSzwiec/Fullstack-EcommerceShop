@@ -1,5 +1,5 @@
 import React from 'react';
-import { Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, Box, List, ListItem, Text, Flex, Icon } from '@chakra-ui/react';
+import { Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerBody, List, ListItem, Text, Icon } from '@chakra-ui/react';
 import { ChevronRightIcon } from '@chakra-ui/icons';
 
 const HamburgerMenu = ({ isOpen, onClose }) => {
@@ -64,7 +64,7 @@ const HamburgerMenu = ({ isOpen, onClose }) => {
             <ListItem _hover={{ color: 'orange.300' }}>
               <Text fontSize="lg" fontWeight="bold">Newsletter</Text>
             </ListItem>
-            <ListItem _hover={{ color: 'orange.300' }}>
+            <ListItem>
               <Text fontSize="lg" fontWeight="bold">Follow Us</Text>
               <List ml={4} mt={2}>
                 <ListItem _hover={{ color: 'orange.300' }}>

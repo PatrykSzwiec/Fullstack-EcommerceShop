@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { Box, Heading, Flex, IconButton, Container, Image, useDisclosure } from '@chakra-ui/react';
 import { AiOutlineMenu, AiOutlineSearch, AiOutlineUser, AiOutlineShoppingCart } from 'react-icons/ai';
-import HamburgerMenu from '../HamburgerMenu/HamburgerMenu';
+import HamburgerMenu from '../../features/HamburgerMenu/HamburgerMenu';
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -21,7 +22,9 @@ const Navbar = () => {
           </Box>
 
           <Heading as="h1" size="lg">
-            <Image src="/logo.png" alt="Your logo" />
+            <Link to="/">
+              <Image src="/logo.png" alt="Your logo" />
+            </Link>
           </Heading>
 
           <HamburgerMenu isOpen={isOpen} onClose={onClose} />
