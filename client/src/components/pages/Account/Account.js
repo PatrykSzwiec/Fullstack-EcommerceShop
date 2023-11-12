@@ -1,15 +1,15 @@
 import React from 'react';
 import { Box, Text } from '@chakra-ui/react';
 
-const Article = ({ title, content }) => {
+const Account = () => {
   return (
     <Box p={4}>
       <Text as="h2" fontSize="xl" fontWeight="bold">
-        {title}
+        XDDD
       </Text>
-      <Text mt={2}>{content}</Text>
+      <Text mt={2}>xDD</Text>
     </Box>
   );
 };
 
-export default Article;
+export default Account;

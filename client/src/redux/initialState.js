@@ -1,6 +1,5 @@
 const initialState = {
-
-	users: [null]
+	  users: null
   };
 
   export default initialState;

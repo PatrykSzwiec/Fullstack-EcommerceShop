@@ -36,7 +36,7 @@ import configuration from './config/configuration';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(cors()).forRoutes({
+    consumer.apply(cors({ origin: 'http://localhost:3000' })).forRoutes({
       path: '*',
       method: RequestMethod.ALL,
     });

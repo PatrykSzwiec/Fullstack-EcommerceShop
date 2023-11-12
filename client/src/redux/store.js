@@ -1,16 +1,15 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
-import initialState from './initialState';
 import thunk from 'redux-thunk';
+import usersReducer from './usersRedux';
 
 
-const subreducers = {
-  
-}
+const rootReducer = combineReducers({
+  user: usersReducer,
+});
 
-const reducer = combineReducers(subreducers);
+
 const store = createStore(
-  reducer,
-  initialState,
+  rootReducer,
   compose(
 		applyMiddleware(thunk),
 		window.__REDUX_DEVTOOLS_EXTENSION__ ? window.__REDUX_DEVTOOLS_EXTENSION__() : f => f

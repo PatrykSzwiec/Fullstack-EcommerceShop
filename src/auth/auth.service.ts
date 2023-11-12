@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { RegisterDTO } from './dtos/register.dto';
 import * as bcrypt from 'bcryptjs';
@@ -14,11 +14,38 @@ export class AuthService {
   ) {}
 
   public async register(registrationData: RegisterDTO) {
-    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
-    const userData = {
-      email: registrationData.email,
-    };
+    console.log('Registration Data:', registrationData);
+
+    const { email, password, repeatPassword } = registrationData;
+
+    // Validate email format
+    if (!this.validateEmail(email)) {
+      console.log('Invalid email format');
+      throw new BadRequestException('Invalid email format');
+    }
+
+    // Validate password length
+    if (password.length < 5) {
+      throw new BadRequestException(
+        'Password must be at least 5 characters long',
+      );
+    }
+
+    // Validate password equality
+    if (password !== repeatPassword) {
+      console.log('Passwords do not match:', password, repeatPassword);
+      throw new BadRequestException('Passwords do not match');
+    }
+
+    // Hash password and create user
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const userData = { email };
     return this.usersService.create(userData, hashedPassword);
+  }
+
+  private validateEmail(email: string): boolean {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   public async validateUser(email: string, password: string) {

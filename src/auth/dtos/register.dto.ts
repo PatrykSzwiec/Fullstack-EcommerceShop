@@ -16,6 +16,6 @@ export class RegisterDTO {
   @IsNotEmpty()
   @IsString()
   @Length(5, 40)
-  @Match('password')
-  passwordRepeat: string;
+  @Match('password', { message: 'Passwords do not match' })
+  repeatPassword: string;
 }
