@@ -73,6 +73,7 @@ model User {
 
   orders Order[]
   carts Cart[]
+  deliveryAddress DeliveryAddress[]
 
 }
 
@@ -81,4 +82,16 @@ model Password {
   hashedPassword String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
+}
+
+// Delivery Address
+model DeliveryAddress {
+  id           String @id @default(uuid())
+  country      String
+  city         String
+  postcode     String
+  address      String
+  phone_number String
+  userId       String   
+  user         User     @relation(fields: [userId], references: [id])
 }

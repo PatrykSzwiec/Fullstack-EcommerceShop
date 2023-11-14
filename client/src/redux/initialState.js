@@ -1,5 +1,10 @@
 const initialState = {
-	  users: null
-  };
+  users: null,
+
+  products: {
+    products: [],
+    selectedProduct: null,
+  },
+}
 
   export default initialState;

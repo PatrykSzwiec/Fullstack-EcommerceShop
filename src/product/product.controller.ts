@@ -37,12 +37,12 @@ export class ProductController {
     if (productData.images && productData.images.length > 0) {
       productData.images = productData.images.map((base64Data, index) => {
         const fileName = `image_${index + 1}.jpg`; // You can generate a unique file name here
-        const filePath = `./../../uploads/${fileName}`;
+        const filePath = `./../../public/uploads/${fileName}`;
 
         // Save the image data as a file
         fs.writeFileSync(filePath, base64Data, 'base64');
 
-        return `./../../uploads/${fileName}`; // Save the image path in the database
+        return `/uploads/${fileName}`; // Save the relative image path in the database
       });
     }
     return this.productService.create(productData);

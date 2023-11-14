@@ -5,7 +5,7 @@ import { Role } from '@prisma/client';
 @Injectable()
 export class AdminAuthGuard implements CanActivate {
   canActivate(
-    context: ExecutionContext,
+    context: ExecutionContext
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
     if (request.user.role === Role.ADMIN) {

@@ -25,6 +25,11 @@ export class UsersService {
     });
   }
 
+  public async getIdByEmail(email: User['email']): Promise<User['id'] | null> {
+    const user = await this.getByEmail(email);
+    return user?.id || null;
+  }
+
   public async create(
     userData: Omit<User, 'id' | 'role'>,
     password: Password['hashedPassword'],

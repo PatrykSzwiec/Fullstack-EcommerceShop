@@ -27,6 +27,14 @@ export class UsersController {
     return user;
   }
 
+  @Get('byemail/:email')
+  async getIdByEmail(@Param('email') email: string) {
+    console.log('Received email:', email);
+    const userId = await this.usersService.getIdByEmail(email);
+    if (!userId) throw new NotFoundException('User not found');
+    return { userId };
+  }
+
   @Delete(':id')
   @UseGuards(AdminAuthGuard)
   @UseGuards(JwtAuthGuard)

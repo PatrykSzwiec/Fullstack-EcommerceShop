@@ -11,7 +11,11 @@ export class ProductService {
   constructor(private prismaService: PrismaService) {}
 
   public getAll(): Promise<Product[]> {
-    return this.prismaService.product.findMany();
+    return this.prismaService.product.findMany({
+      include: {
+        images: true,
+      },
+    });
   }
 
   public getById(id: Product['id']): Promise<Product | null> {
