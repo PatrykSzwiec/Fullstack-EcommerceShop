@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+import { IsNotEmpty, IsNumber, IsString, IsInt, Length, IsEnum, IsArray, ArrayMinSize } from 'class-validator';
 
 enum Color {
   Black = 'Black',
@@ -6,25 +7,6 @@ enum Color {
   Blue = 'Blue',
   Green = 'Green',
 }
-
-enum Size {
-  XS = 'XS',
-  S = 'S',
-  M = 'M',
-  L = 'L',
-  XL = 'XL',
-}
-
-import {
-  IsNotEmpty,
-  IsString,
-  IsInt,
-  Length,
-  IsEnum,
-  IsArray,
-  ArrayMinSize,
-  IsNumber,
-} from 'class-validator';
 
 export class CreateProductDTO {
   @IsNotEmpty()
@@ -51,11 +33,11 @@ export class CreateProductDTO {
   @IsEnum(Color)
   color: Color;
 
-  @IsNotEmpty()
-  @IsEnum(Size)
-  size: Size;
+  @IsArray()
+  @ArrayMinSize(1)
+  sizes: { size: string; quantity: number }[];
 
   @IsArray()
   @ArrayMinSize(1)
-  images: string[];
+  images: { url: string }[];
 }

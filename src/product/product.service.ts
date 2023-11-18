@@ -4,7 +4,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Product } from '@prisma/client';
+import { Prisma,Product } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -14,6 +14,7 @@ export class ProductService {
     return this.prismaService.product.findMany({
       include: {
         images: true,
+        sizes: true,
       },
     });
   }
@@ -23,20 +24,41 @@ export class ProductService {
       where: { id },
       include: {
         images: true,
+        sizes: true,
       },
     });
   }
 
-  public async create(productData: Product): Promise<Product> {
+  public async createProductWithSizesAndImages(
+    id: number,
+    name: string,
+    price: number,
+    description: string,
+    shortDescription: string,
+    color: string,
+    sizes: { size: string; quantity: number }[],
+    images: { url: string }[],
+  ): Promise<Product> {
     try {
-      return await this.prismaService.product.create({
-        data: productData,
+      const createdProduct = await this.prismaService.product.create({
+        data: {
+          id,
+          name,
+          price,
+          description,
+          shortDescription,
+          color,
+          sizes: {
+            create: sizes.map(({ size, quantity }) => ({ size, quantity })),
+          },
+          images: {
+            create: images,
+          },
+        },
       });
+  
+      return createdProduct;
     } catch (error) {
-      if (error.code === 'P2002')
-        throw new ConflictException('Title is already taken');
-      if (error.code === 'P2025')
-        throw new BadRequestException("Author doesn't exist");
       throw error;
     }
   }

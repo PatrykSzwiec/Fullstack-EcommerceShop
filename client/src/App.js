@@ -7,6 +7,7 @@ import Login from './components/pages/Login/Login';
 import Register from './components/pages/Register/Register';
 import NotFound from './components/pages/NotFound/NotFound';
 import Account from './components/pages/Account/Account';
+import ProductOverView from './components/pages/ProductOverView/ProductOverView';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/account" element={<Account />} />
+        <Route path="/product/:id" element={<ProductOverView />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

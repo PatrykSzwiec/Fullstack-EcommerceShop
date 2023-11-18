@@ -23,6 +23,7 @@ enum Size {
   L
   XL
 }
+
 // PRODUCT MODEL
 model Product {
   id Int @id
@@ -30,12 +31,20 @@ model Product {
   price Int
   description String
   shortDescription String
-  color Color
-  size Size
+  color String
+  sizes ProductSize[]
   images ProductImage[]
 
   orders Order[]
   carts Cart[]
+}
+
+model ProductSize {
+  id              Int            @id @default(autoincrement())
+  product         Product        @relation(fields: [productId], references: [id])
+  productId       Int
+  size            String
+  quantity        Int
 }
 
 model ProductImage {
@@ -73,8 +82,6 @@ model User {
 
   orders Order[]
   carts Cart[]
-  deliveryAddress DeliveryAddress[]
-
 }
 
 model Password {
@@ -82,16 +89,4 @@ model Password {
   hashedPassword String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String @unique
-}
-
-// Delivery Address
-model DeliveryAddress {
-  id           String @id @default(uuid())
-  country      String
-  city         String
-  postcode     String
-  address      String
-  phone_number String
-  userId       String   
-  user         User     @relation(fields: [userId], references: [id])
 }

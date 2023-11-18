@@ -13,7 +13,6 @@ import { ProductService } from './product.service';
 import { JwtAuthGuard } from 'src/auth/jwt.auth.guard';
 import { CreateProductDTO } from './dtos/create-product-dto';
 import { UpdateProductDTO } from './dtos/update-product.dto';
-import * as fs from 'fs';
 
 @Controller('product')
 export class ProductController {
@@ -32,20 +31,27 @@ export class ProductController {
   }
 
   @Post('/')
-  @UseGuards(JwtAuthGuard)
-  async create(@Body() productData: CreateProductDTO) {
-    if (productData.images && productData.images.length > 0) {
-      productData.images = productData.images.map((base64Data, index) => {
-        const fileName = `image_${index + 1}.jpg`; // You can generate a unique file name here
-        const filePath = `./../../public/uploads/${fileName}`;
+  async createProduct(@Body() productPayload: CreateProductDTO) {
+    try {
+      const { id, name, price, description, shortDescription, color, sizes, images } = productPayload;
 
-        // Save the image data as a file
-        fs.writeFileSync(filePath, base64Data, 'base64');
+      const sizeQuantity = sizes.map(({ size, quantity }) => ({ size, quantity }));
 
-        return `/uploads/${fileName}`; // Save the relative image path in the database
-      });
+      const createdProduct = await this.productService.createProductWithSizesAndImages(
+        id,
+        name,
+        price,
+        description,
+        shortDescription,
+        color,
+        sizeQuantity,
+        images,
+      );
+
+      return createdProduct;
+    } catch (error) {
+      throw error;
     }
-    return this.productService.create(productData);
   }
 
   @Put('/:id')

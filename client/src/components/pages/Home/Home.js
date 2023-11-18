@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Box, Grid, Spinner, Alert, Button } from '@chakra-ui/react';
+import { Box, Grid, Spinner, Alert, Button, Center, Container } from '@chakra-ui/react';
 import SingleProduct from './../../features/SingleProduct/SingleProduct';
 import { setProducts } from './../../../redux/productsRedux';
 import { API_URL } from '../../../config';
@@ -34,38 +34,40 @@ const Home = () => {
   }, [dispatch]);
 
   return (
-    <Box p={4} maxWidth="70%" mx="auto" position="sticky" top="0" zIndex="sticky">
-      {isLoading ? (
-        <Spinner size="xl" />
-      ) : (
-        <Grid templateColumns="repeat(auto-fill, minmax(17.5%, 1fr))" gap={6}>
-          {products.map((product) => (
-            <SingleProduct key={product.id} product={product} />
-          ))}
-        </Grid>
-      )}
+    <Center>
+      <Box p={4} w="100%" position="sticky" top="0" zIndex="sticky">
+        <Container maxW="70%">
+          {isLoading ? (
+            <Spinner size="xl" />
+          ) : (
+            <Grid templateColumns="repeat(auto-fill, minmax(20%, 1fr))" gap={6}>
+              {products.map((product) => (
+                <SingleProduct key={product.id} product={product} />
+              ))}
+            </Grid>
+          )}
 
-      {/* Display an error message if fetching fails */}
-      {!isLoading && error && (
-        <Alert status="error" mt={4}>
-          Failed to fetch products. Please try again later.
-        </Alert>
-      )}
+          {!isLoading && error && (
+            <Alert status="error" mt={4}>
+              Failed to fetch products. Please try again later.
+            </Alert>
+          )}
 
-      {/* Add a refresh button in case of fetching failure */}
-      {!isLoading && error && (
-        <Button
-          colorScheme="teal"
-          mt={4}
-          onClick={() => {
-            setIsLoading(true);
-            fetchProducts();
-          }}
-        >
-          Refresh
-        </Button>
-      )}
-    </Box>
+          {!isLoading && error && (
+            <Button
+              colorScheme="teal"
+              mt={4}
+              onClick={() => {
+                setIsLoading(true);
+                fetchProducts();
+              }}
+            >
+              Refresh
+            </Button>
+          )}
+        </Container>
+      </Box>
+    </Center>
   );
 };
 
