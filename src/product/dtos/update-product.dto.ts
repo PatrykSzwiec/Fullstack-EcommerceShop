@@ -1,4 +1,5 @@
-/* eslint-disable prettier/prettier */
+import { IsString, IsEnum, Length, IsArray, ArrayMinSize, IsInt } from 'class-validator';
+
 enum Color {
   Black = 'Black',
   Red = 'Red',
@@ -6,50 +7,33 @@ enum Color {
   Green = 'Green',
 }
 
-enum Size {
-  XS = 'XS',
-  S = 'S',
-  M = 'M',
-  L = 'L',
-  XL = 'XL',
-}
-
-import {
-  IsNotEmpty,
-  IsString,
-  IsInt,
-  Length,
-  IsEnum,
-  IsArray,
-  ArrayMinSize,
-} from 'class-validator';
-
 export class UpdateProductDTO {
-  @IsNotEmpty()
+  // Making name mandatory
   @IsString()
   @Length(3, 100)
   name: string;
 
-  @IsNotEmpty()
+  // Other properties as before
   @IsInt()
-  price: number;
-
-  @IsNotEmpty()
-  @IsString()
-  description: string;
+  price?: number;
 
   @IsString()
-  shortDescription: string;
+  description?: string;
 
-  @IsNotEmpty()
+  @IsString()
+  shortDescription?: string;
+
   @IsEnum(Color)
   color: Color;
 
-  @IsNotEmpty()
-  @IsEnum(Size)
-  size: Size;
+  @IsArray()
+  @ArrayMinSize(1)
+  sizes?: { size: string; quantity: number }[];
 
   @IsArray()
   @ArrayMinSize(1)
-  images: string[];
+  images?: { url: string }[];
+
+  @IsString()
+  cartId?: string;
 }

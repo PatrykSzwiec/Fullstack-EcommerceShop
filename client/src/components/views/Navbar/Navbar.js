@@ -21,12 +21,16 @@ const Navbar = () => {
       navigate('/login');
     }
   };
-  
+
   const handleLogout = () => {
-    // Initiate logout
+    localStorage.removeItem('accessToken');
     dispatch(logOut());
     window.location.reload();
   };
+
+  const handleCartNavigation = () => {
+    navigate('/cart');
+  }
 
   return (
     <Box p={4} w="100%">
@@ -82,6 +86,7 @@ const Navbar = () => {
               icon={<AiOutlineShoppingCart />}
               variant="ghost"
               fontSize="2.5rem"
+              onClick={handleCartNavigation}
             />
           </Flex>
         </Flex>

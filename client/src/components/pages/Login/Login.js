@@ -42,9 +42,14 @@ const Login = () => {
   
       if (res.ok) {
         const data = await res.json();
+        console.log('Dane z odpowiedzi:', data);
   
         if (data.message === 'success') {
           setStatus('success');
+
+          localStorage.setItem('accessToken', data.access_token);
+          console.log('Sesja została zapisana w localStorage:', data.access_token);
+
           dispatch(logIn({ email }));
           setTimeout(() => navigate('/'), 3000);
         } else {

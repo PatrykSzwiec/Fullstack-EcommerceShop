@@ -4,6 +4,7 @@ import { RegisterDTO } from './dtos/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -71,5 +72,29 @@ export class AuthService {
     return {
       access_token: accessToken,
     };
+  }
+
+  async getUserFromToken(token: string): Promise<User | null> {
+    try {
+      const decodedToken = this.jwtService.verify(token); // Assuming your JWT service can verify tokens
+      if (!decodedToken || !decodedToken.sub) {
+        console.log('Token verification failed or does not contain sub');
+        return null;
+      }
+      const userId = decodedToken.sub; // Assuming sub contains user ID
+      console.log('Decoded user ID:', userId);
+      const user = await this.usersService.getById(userId); // Fetch user by ID from your UsersService
+  
+      if (!user) {
+        console.log('User not found');
+        return null;
+      }
+  
+      console.log('User details retrieved:', user);
+      return user;
+    } catch (error) {
+      console.error('Error verifying token:', error);
+      return null;
+    }
   }
 }

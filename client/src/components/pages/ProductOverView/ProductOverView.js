@@ -20,6 +20,7 @@ const ProductOverView = () => {
   const [amount, setAmount] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [sizesWithQuantity, setSizesWithQuantity] = useState([]);
+  const [cartItems, setCartItems] = useState([]); // Cart state
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -58,8 +59,35 @@ const ProductOverView = () => {
     }
   };
 
-
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
+    if (selectedSize) {
+      try {
+        const response = await fetch(`${API_URL}/cart/add`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: selectedSize.userId, // Ensure userId is sent if needed
+            productId: selectedSize.productId,
+            size: selectedSize.size,
+            amount,
+          }),
+        });
+  
+        if (!response.ok) {
+          throw new Error('Failed to add item to the cart');
+        }
+  
+        const data = await response.json();
+        console.log('Item added to cart:', data);
+        
+        // Update local state or perform any necessary action
+      } catch (error) {
+        console.error('Error adding item to cart:', error);
+        // Handle error, show an error message to the user
+      }
+    }
   };
 
   if (!product) {
@@ -72,11 +100,7 @@ const ProductOverView = () => {
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           {/* Column 1 - Image Carousel */}
           <Box gridColumn="1 / 2">
-            <Image
-              src={product.images[0].url}
-              alt={product.name}
-              w="100%"
-            />
+            <Image src={product.images[0].url} alt={product.name} w="100%" />
           </Box>
 
           {/* Column 2 - Product Details */}

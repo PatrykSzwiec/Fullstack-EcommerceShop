@@ -65,7 +65,7 @@ export class ProductService {
 
   public async updateById(
     id: Product['id'],
-    productData: Omit<Product, 'id'>,
+    productData: Partial<Omit<Product, 'id'>>,
   ): Promise<Product> {
     return this.prismaService.product.update({
       where: { id },
