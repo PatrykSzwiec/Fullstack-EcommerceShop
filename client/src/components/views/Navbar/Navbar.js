@@ -5,6 +5,8 @@ import { AiOutlineMenu, AiOutlineSearch, AiOutlineUser, AiOutlineShoppingCart, A
 import HamburgerMenu from '../../features/HamburgerMenu/HamburgerMenu';
 import { useSelector, useDispatch } from 'react-redux';
 import { logOut } from '../../../redux/usersRedux';
+import getUserIdFromToken from '../../utils/getUserIdFromToken';
+
 
 const Navbar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,7 +31,8 @@ const Navbar = () => {
   };
 
   const handleCartNavigation = () => {
-    navigate('/cart');
+    const userId = getUserIdFromToken();
+    navigate(`/cart/${userId}`);
   }
 
   return (

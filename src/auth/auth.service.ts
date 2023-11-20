@@ -4,7 +4,7 @@ import { RegisterDTO } from './dtos/register.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +12,7 @@ export class AuthService {
     private usersService: UsersService,
     private jwtService: JwtService,
     private configService: ConfigService,
+    private prismaService: PrismaService,
   ) {}
 
   public async register(registrationData: RegisterDTO) {
@@ -41,7 +42,24 @@ export class AuthService {
     // Hash password and create user
     const hashedPassword = await bcrypt.hash(password, 10);
     const userData = { email };
-    return this.usersService.create(userData, hashedPassword);
+    const newUser = await this.usersService.create(userData, hashedPassword);
+
+    await this.createCartForUser(newUser.id);
+
+    return { status: 'success', message: 'User registered successfully', user: newUser };
+  }
+
+  private async createCartForUser(userId: string) {
+    try {
+      const existingCart = await this.prismaService.cart.findUnique({ where: { userId } });
+
+      if (!existingCart) {
+        await this.prismaService.cart.create({ data: { userId } });
+      }
+    } catch (error) {
+      console.error('Cart creation failed:', error);
+      throw new Error('Failed to create cart for the user');
+    }
   }
 
   private validateEmail(email: string): boolean {
@@ -74,27 +92,4 @@ export class AuthService {
     };
   }
 
-  async getUserFromToken(token: string): Promise<User | null> {
-    try {
-      const decodedToken = this.jwtService.verify(token); // Assuming your JWT service can verify tokens
-      if (!decodedToken || !decodedToken.sub) {
-        console.log('Token verification failed or does not contain sub');
-        return null;
-      }
-      const userId = decodedToken.sub; // Assuming sub contains user ID
-      console.log('Decoded user ID:', userId);
-      const user = await this.usersService.getById(userId); // Fetch user by ID from your UsersService
-  
-      if (!user) {
-        console.log('User not found');
-        return null;
-      }
-  
-      console.log('User details retrieved:', user);
-      return user;
-    } catch (error) {
-      console.error('Error verifying token:', error);
-      return null;
-    }
-  }
 }

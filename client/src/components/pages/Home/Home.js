@@ -29,7 +29,7 @@ const Home = () => {
   };
 
   useEffect(() => {
-    console.log(products); // Add this line to check if products are in the state
+    //console.log(products);
     fetchProducts();
   }, [dispatch]);
 

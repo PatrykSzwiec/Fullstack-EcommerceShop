@@ -16,63 +16,65 @@ enum Color {
   Green
 }
 
-// PRODUCT MODEL
 model Product {
-  id Int @id
-  name String
-  price Int
-  description String
+  id               Int           @id
+  name             String
+  price            Int
+  description      String
   shortDescription String
-  color String
-  sizes ProductSize[]
-  images ProductImage[]
-
-  cart            Cart?         @relation(fields: [cartId], references: [id])
-  cartId          String?
+  color            String
+  sizes            ProductSize[]
+  images           ProductImage[]
+  cartItems        CartItem[]
 }
 
 model ProductSize {
-  id              Int            @id @default(autoincrement())
-  product         Product        @relation(fields: [productId], references: [id])
-  productId       Int
-  size            String
-  quantity        Int
+  id        Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  size      String
+  quantity  Int
 }
 
 model ProductImage {
-  id Int @id @default(autoincrement())
-  url String
-  product Product @relation(fields: [productId], references: [id])
+  id        Int      @id @default(autoincrement())
+  url       String
+  product   Product  @relation(fields: [productId], references: [id])
   productId Int
 }
 
-/// USERS AND ROLES MODELS
 enum Role {
   USER
   ADMIN
 }
 
 model User {
-  id String @id @default(uuid())
-  email String @unique
-  role Role @default(USER)
+  id       String   @id @default(uuid())
+  email    String   @unique
+  role     Role     @default(USER)
   password Password?
-  cart  Cart?
+  cart     Cart?
 }
 
-
 model Password {
-  id String @id @default(uuid())
+  id             String    @id @default(uuid())
   hashedPassword String
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId String @unique
+  user           User      @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
 model Cart {
-  id         String    @id @default(uuid())
-  user       User?     @relation(fields: [userId], references: [id])
-  userId     String?
-  products   Product[]
+  id       String    @id @default(uuid())
+  userId   String    @unique
+  user     User      @relation(fields: [userId], references: [id])
+  cartItems CartItem[]
+}
 
-  @@unique([userId])
+model CartItem {
+  id         Int       @id @default(autoincrement())
+  cart       Cart      @relation(fields: [cartId], references: [id])
+  cartId     String
+  product    Product   @relation(fields: [productId], references: [id])
+  productId  Int
+  size       String
+  quantity   Int
 }

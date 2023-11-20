@@ -13,6 +13,7 @@ import {
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { API_URL } from '../../../config';
+import getUserIdFromToken from '../../utils/getUserIdFromToken';
 
 const ProductOverView = () => {
   const { id } = useParams();
@@ -20,7 +21,8 @@ const ProductOverView = () => {
   const [amount, setAmount] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [sizesWithQuantity, setSizesWithQuantity] = useState([]);
-  const [cartItems, setCartItems] = useState([]); // Cart state
+
+  const userId = getUserIdFromToken();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -62,27 +64,32 @@ const ProductOverView = () => {
   const handleAddToCart = async () => {
     if (selectedSize) {
       try {
+        const token = localStorage.getItem('accessToken');
+        if (!token) {
+          return; // Handle case when token is not available
+        }
+
         const response = await fetch(`${API_URL}/cart/add`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
-            userId: selectedSize.userId, // Ensure userId is sent if needed
+            userId,
             productId: selectedSize.productId,
             size: selectedSize.size,
-            amount,
+            quantity: amount,
           }),
         });
-  
-        if (!response.ok) {
-          throw new Error('Failed to add item to the cart');
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log('Product added to cart:', data);
+          // Optionally, you can update the UI or perform additional actions here
+        } else {
+          throw new Error('Failed to add item to cart');
         }
-  
-        const data = await response.json();
-        console.log('Item added to cart:', data);
-        
-        // Update local state or perform any necessary action
       } catch (error) {
         console.error('Error adding item to cart:', error);
         // Handle error, show an error message to the user
