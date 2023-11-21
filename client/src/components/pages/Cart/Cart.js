@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Text,
@@ -9,6 +10,7 @@ import {
   Image,
   Flex,
   IconButton,
+  useToast,
 } from '@chakra-ui/react';
 import { DeleteIcon, AddIcon, MinusIcon } from '@chakra-ui/icons';
 import { API_URL } from '../../../config';
@@ -16,15 +18,16 @@ import getUserIdFromToken from '../../utils/getUserIdFromToken';
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const fetchCartItems = async () => {
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
-        // Handle case when token is not available
         return;
       }
-      
+
       const userId = getUserIdFromToken();
 
       const response = await fetch(`${API_URL}/cart/${userId}`, {
@@ -36,15 +39,14 @@ const Cart = () => {
 
       if (response.ok) {
         const cartData = await response.json();
-        console.log('Received cart data:', cartData);
+        //console.log('Received cart data:', cartData);
         setCartItems(cartData);
-        console.log(cartData);
+        //console.log(cartData);
       } else {
         throw new Error('Failed to fetch cart items');
       }
     } catch (error) {
       console.error('Error fetching cart items:', error);
-      // Handle error, show an error message to the user
     }
   };
 
@@ -61,7 +63,6 @@ const Cart = () => {
         return;
       }
 
-      // Update item quantity
       const response = await fetch(`${API_URL}/cart/update/${cartItemId}`, {
         method: 'PATCH',
         headers: {
@@ -75,11 +76,9 @@ const Cart = () => {
         throw new Error('Failed to update item quantity');
       }
 
-      // Fetch cart items again to refresh the UI
       fetchCartItems();
     } catch (error) {
       console.error('Error updating item quantity:', error);
-      // Handle error, show an error message to the user
     }
   };
 
@@ -90,7 +89,6 @@ const Cart = () => {
         return;
       }
 
-      // Remove item from cart
       await fetch(`${API_URL}/cart/remove/${cartItemId}`, {
         method: 'DELETE',
         headers: {
@@ -98,26 +96,38 @@ const Cart = () => {
         },
       });
 
-      // Fetch cart items again to refresh the UI
       fetchCartItems();
+
+      // Display toast when item is successfully removed
+      toast({
+        title: 'Product deleted',
+        description: 'The item has been removed from the cart.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
+
     } catch (error) {
       console.error('Error removing item from cart:', error);
-      // Handle error, show an error message to the user
     }
   };
 
-  // Calculate total price for an individual item
   const calculateItemTotal = (price, quantity) => price * quantity;
 
-  // Calculate total price for all items in the cart
   const calculateTotalPrice = () => {
     if (!Array.isArray(cartItems) || cartItems.length === 0) {
-      return 0; // Return 0 if cartItems is not an array or is empty
+      return 0;
     }
-  
+
     return cartItems.reduce((total, item) => {
       return total + calculateItemTotal(item.product.price, item.quantity);
     }, 0);
+  };
+
+  const handleOrderClick = () => {
+    const userId = getUserIdFromToken();
+    const total = calculateTotalPrice()
+    navigate(`/order/${userId}`, { state: { cartItems, cartValue: total } });
   };
 
   return (
@@ -129,7 +139,7 @@ const Cart = () => {
             <Flex key={item.id} mb={4} p={4} borderWidth="1px" borderRadius="md" align="center">
               {/* Subcolumn 1: Image */}
               <Box mr={4}>
-                <Image boxSize="200px" src={item.product.images[0].url} alt={item.productId} objectFit="cover" />
+                <Image boxSize="200px" src={item.product.images[2].url} alt={item.productId} objectFit="cover" />
               </Box>
               {/* Subcolumn 2: Product Details */}
               <VStack align="start" flex="1">
@@ -187,7 +197,7 @@ const Cart = () => {
               <Text fontSize="lg">Cart Value:</Text>
               <Text fontWeight="semibold">${calculateTotalPrice()}</Text>
             </Box>
-            <Button colorScheme="teal" w="100%">
+            <Button colorScheme="teal" w="100%" onClick={handleOrderClick}>
               Proceed to Finalize the Order
             </Button>
           </VStack>

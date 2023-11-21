@@ -16,13 +16,13 @@ export class AuthService {
   ) {}
 
   public async register(registrationData: RegisterDTO) {
-    console.log('Registration Data:', registrationData);
+    //console.log('Registration Data:', registrationData);
 
     const { email, password, repeatPassword } = registrationData;
 
     // Validate email format
     if (!this.validateEmail(email)) {
-      console.log('Invalid email format');
+      //console.log('Invalid email format');
       throw new BadRequestException('Invalid email format');
     }
 
@@ -35,7 +35,7 @@ export class AuthService {
 
     // Validate password equality
     if (password !== repeatPassword) {
-      console.log('Passwords do not match:', password, repeatPassword);
+      //console.log('Passwords do not match:', password, repeatPassword);
       throw new BadRequestException('Passwords do not match');
     }
 

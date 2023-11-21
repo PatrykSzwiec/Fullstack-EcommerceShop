@@ -10,6 +10,7 @@ import {
   HStack,
   Divider,
   Tooltip,
+  useToast,
 } from '@chakra-ui/react';
 import { useParams } from 'react-router-dom';
 import { API_URL } from '../../../config';
@@ -21,8 +22,14 @@ const ProductOverView = () => {
   const [amount, setAmount] = useState(1);
   const [selectedSize, setSelectedSize] = useState('');
   const [sizesWithQuantity, setSizesWithQuantity] = useState([]);
+  const toast = useToast();
+  const [hovered, setHovered] = useState(false);
 
   const userId = getUserIdFromToken();
+
+  const handleImageHover = () => {
+    setHovered(!hovered);
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -66,7 +73,7 @@ const ProductOverView = () => {
       try {
         const token = localStorage.getItem('accessToken');
         if (!token) {
-          return; // Handle case when token is not available
+          return;
         }
 
         const response = await fetch(`${API_URL}/cart/add`, {
@@ -85,14 +92,18 @@ const ProductOverView = () => {
 
         if (response.ok) {
           const data = await response.json();
-          console.log('Product added to cart:', data);
-          // Optionally, you can update the UI or perform additional actions here
+          //console.log('Product added to cart:', data);
+          toast({
+            title: 'Product added to cart!',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+          });
         } else {
           throw new Error('Failed to add item to cart');
         }
       } catch (error) {
         console.error('Error adding item to cart:', error);
-        // Handle error, show an error message to the user
       }
     }
   };
@@ -107,7 +118,13 @@ const ProductOverView = () => {
         <Grid templateColumns="repeat(2, 1fr)" gap={6}>
           {/* Column 1 - Image Carousel */}
           <Box gridColumn="1 / 2">
-            <Image src={product.images[0].url} alt={product.name} w="100%" />
+            <Image
+              src={hovered ? product.images[1].url : product.images[0].url}
+              alt={product.name}
+              w="100%"
+              onMouseOver={handleImageHover}
+              onMouseOut={handleImageHover}
+            />
           </Box>
 
           {/* Column 2 - Product Details */}

@@ -22,7 +22,7 @@ const Home = () => {
       }
     } catch (error) {
       console.error('Error fetching products:', error);
-      dispatch(setProducts([])); // Clear products in case of an error
+      dispatch(setProducts([])); 
     } finally {
       setIsLoading(false);
     }

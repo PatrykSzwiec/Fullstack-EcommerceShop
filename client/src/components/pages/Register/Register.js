@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Heading, Button, Alert, Spinner, Input } from '@chakra-ui/react';
+import { Box, Heading, Button, Input, useToast } from '@chakra-ui/react';
 import { API_URL } from '../../../config';
 import { useNavigate } from 'react-router-dom';
 
@@ -8,21 +8,31 @@ const Register = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
-  const [status, setStatus] = useState(null);
+  const toast = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic client-side validation
     if (!email || !password || !repeatPassword) {
-      setStatus('clientError');
+      toast({
+        title: 'Incomplete Data',
+        description: 'Please fill out all fields.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
-    // Check if passwords match
     if (password !== repeatPassword) {
-      setStatus('passwordMismatch');
+      toast({
+        title: 'Password Mismatch',
+        description: 'Passwords do not match. Please check your input.',
+        status: 'warning',
+        duration: 3000,
+        isClosable: true,
+      });
       return;
     }
 
@@ -38,17 +48,47 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        setStatus('success');
+        toast({
+          title: 'Registration Successful',
+          description: 'You have been successfully registered!',
+          status: 'success',
+          duration: 3000,
+          isClosable: true,
+        });
         setTimeout(() => navigate('/'), 3000);
       } else if (response.status === 400) {
-        setStatus('clientError');
+        toast({
+          title: 'Incomplete Data',
+          description: 'Not enough data. Please complete all fields. Password must be at least 6 characters',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
       } else if (response.status === 409) {
-        setStatus('emailError');
+        toast({
+          title: 'Email Already Exists',
+          description: 'The email already exists. Please use a different email.',
+          status: 'warning',
+          duration: 3000,
+          isClosable: true,
+        });
       } else {
-        setStatus('serverError');
+        toast({
+          title: 'Registration Failed',
+          description: 'Something went wrong. Please try again!',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+        });
       }
     } catch (error) {
-      setStatus('serverError');
+      toast({
+        title: 'Server Error',
+        description: 'Something went wrong. Please try again!',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
     } finally {
       setIsLoading(false);
     }
@@ -58,38 +98,6 @@ const Register = () => {
     <Box p={4} w="100%">
       <Box maxW="md" mx="auto" bg="white" p={8} rounded="lg" shadow="md">
         <Heading mb={4}>Register</Heading>
-
-        {status === 'success' && (
-          <Alert status="success" mb={4}>
-            You have been successfully registered! You can now log in...
-          </Alert>
-        )}
-
-        {status === 'serverError' && (
-          <Alert status="error" mb={4}>
-            Something went wrong... Unexpected error. Try again!
-          </Alert>
-        )}
-
-        {status === 'clientError' && (
-          <Alert status="error" mb={4}>
-            Not enough data. You must complete all fields.
-          </Alert>
-        )}
-
-        {status === 'emailError' && (
-          <Alert status="warning" mb={4}>
-            Email already exists. You need to use a different email.
-          </Alert>
-        )}
-
-        {status === 'passwordMismatch' && (
-          <Alert status="warning" mb={4}>
-            Passwords do not match. Please check your input.
-          </Alert>
-        )}
-
-        {status === 'loading' && <Spinner size="lg" mb={4} />}
 
         <form onSubmit={handleSubmit}>
           <Box mb={4}>

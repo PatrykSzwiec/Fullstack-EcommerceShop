@@ -18,7 +18,7 @@ export class AuthController {
 
   @Post('/register')
   create(@Body() userData: RegisterDTO) {
-    console.log('Controller method reached');
+    //console.log('Controller method reached');
     return this.authService.register(userData);
   }
 

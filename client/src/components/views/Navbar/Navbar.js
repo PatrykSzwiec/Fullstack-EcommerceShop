@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate} from 'react-router-dom';
-import { Box, Heading, Flex, IconButton, Container, Image, useDisclosure } from '@chakra-ui/react';
+import { Box, Heading, Flex, IconButton, Container, Image, useDisclosure, useToast } from '@chakra-ui/react';
 import { AiOutlineMenu, AiOutlineSearch, AiOutlineUser, AiOutlineShoppingCart, AiOutlineLogout } from 'react-icons/ai';
 import HamburgerMenu from '../../features/HamburgerMenu/HamburgerMenu';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,13 +13,12 @@ const Navbar = () => {
   const navigate = useNavigate();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const handleAccountClick = () => {
     if (user) {
-      // User is logged in, navigate to account
       navigate('/account');
     } else {
-      // User is not logged in, navigate to login page
       navigate('/login');
     }
   };
@@ -27,7 +26,17 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
     dispatch(logOut());
-    window.location.reload();
+
+    toast({
+      title: 'Logging out...',
+      status: 'info',
+      duration: 3000,
+      isClosable: true,
+    });
+
+    setTimeout(() => {
+      navigate("/");
+    }, 3000);
   };
 
   const handleCartNavigation = () => {

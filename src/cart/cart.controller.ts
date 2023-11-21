@@ -25,4 +25,9 @@ export class CartController {
   async removeCartItem(@Param('cartItemId') cartItemId: number) {
     return this.cartService.removeCartItem(cartItemId);
   }
+
+  @Delete('clear/:userId')
+  async clearUserCart(@Param('userId') userId: string) {
+    return this.cartService.clearUserCart(userId);
+  }
 }

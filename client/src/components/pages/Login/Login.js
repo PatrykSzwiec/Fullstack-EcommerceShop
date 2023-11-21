@@ -5,10 +5,10 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Alert,
   Spinner,
   Text,
   Heading,
+  useToast,
 } from '@chakra-ui/react';
 import { useDispatch } from 'react-redux';
 import { logIn } from '../../../redux/usersRedux';
@@ -19,9 +19,42 @@ const Login = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [status, setStatus] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const dispatch = useDispatch();
+  const toast = useToast();
+
+  const handleSuccessToast = () => {
+    toast({
+      title: 'Login successful',
+      description: 'You have been successfully logged in!',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
+  const handleErrorToast = (errorType) => {
+    let description = '';
+    switch (errorType) {
+      case 'serverError':
+        description = 'Something went wrong... Unexpected error. Try again!';
+        break;
+      case 'clientError':
+        description = 'Incorrect data. Login or password is incorrect...';
+        break;
+      default:
+        description = 'An error occurred. Please try again.';
+    }
+
+    toast({
+      title: 'Login failed',
+      description: description,
+      status: 'error',
+      duration: 3000,
+      isClosable: true,
+    });
+  };
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -38,36 +71,37 @@ const Login = () => {
       };
   
       const res = await fetch(`${API_URL}/auth/login`, options);
-      console.log('Login Response:', res);
+      //console.log('Login Response:', res);
   
       if (res.ok) {
         const data = await res.json();
-        console.log('Dane z odpowiedzi:', data);
+        //console.log('Dane z odpowiedzi:', data);
   
         if (data.message === 'success') {
-          setStatus('success');
-
           localStorage.setItem('accessToken', data.access_token);
-          console.log('Sesja została zapisana w localStorage:', data.access_token);
-
+          //console.log('Sesja została zapisana w localStorage:', data.access_token);
+          handleSuccessToast();
           dispatch(logIn({ email }));
-          setTimeout(() => navigate('/'), 3000);
+          setTimeout(() => {
+            navigate('/');
+          }, 3000);
         } else {
-          setStatus('serverError');
+          handleErrorToast('serverError');
         }
       } else if (res.status === 400) {
         const data = await res.json();
         if (data.error === 'authentication_failed') {
-          setStatus('authenticationFailed');
+          handleErrorToast('serverError');
         } else {
-          setStatus('clientError');
+          handleErrorToast('serverError');
         }
       } else {
-        setStatus('serverError');
+        handleErrorToast('serverError');
       }
     } catch (error) {
       console.error('Login Error:', error);
-      setStatus('serverError');
+      handleErrorToast('serverError');
+      handleErrorToast('serverError');
     } finally {
       setIsLoading(false);
     }
@@ -103,24 +137,6 @@ const Login = () => {
               placeholder="Password"
             />
           </FormControl>
-
-          {status === 'success' && (
-            <Alert status="success" mb={4}>
-              You have been successfully logged in!
-            </Alert>
-          )}
-
-          {status === 'serverError' && (
-            <Alert status="error" mb={4}>
-              Something went wrong... Unexpected error. Try again!
-            </Alert>
-          )}
-
-          {status === 'clientError' && (
-            <Alert status="error" mb={4}>
-              Incorrect data. Login or password is incorrect...
-            </Alert>
-          )}
 
           {isLoading && <Spinner size="lg" mb={4} />}
 

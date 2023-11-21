@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,11 +6,14 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+// PRODUCT SCHEMAS 
 enum Color {
   Black
   Red
   Blue
   Green
+  White
 }
 
 model Product {
@@ -26,6 +26,7 @@ model Product {
   sizes            ProductSize[]
   images           ProductImage[]
   cartItems        CartItem[]
+  orderItems       ProductOrder[]
 }
 
 model ProductSize {
@@ -43,6 +44,7 @@ model ProductImage {
   productId Int
 }
 
+// USER SCHEMAS
 enum Role {
   USER
   ADMIN
@@ -62,6 +64,7 @@ model Password {
   user           User      @relation(fields: [id], references: [id], onDelete: Cascade)
 }
 
+// CART SCHEMAS
 model Cart {
   id       String    @id @default(uuid())
   userId   String    @unique
@@ -77,4 +80,28 @@ model CartItem {
   productId  Int
   size       String
   quantity   Int
+}
+
+// ORDER SCHEMAS
+model Order {
+  id           Int        @id @default(autoincrement())
+  userId       String
+  products     ProductOrder[]
+  totalPrice   Int
+  name         String
+  surname      String
+  postCode     String
+  city         String
+  address      String
+  country      String
+}
+
+model ProductOrder {
+  id           Int        @id @default(autoincrement())
+  order        Order      @relation(fields: [orderId], references: [id])
+  orderId      Int
+  product      Product    @relation(fields: [productId], references: [id])
+  productId    Int
+  size         String
+  quantity     Int
 }

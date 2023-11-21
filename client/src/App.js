@@ -9,6 +9,7 @@ import NotFound from './components/pages/NotFound/NotFound';
 import Account from './components/pages/Account/Account';
 import ProductOverView from './components/pages/ProductOverView/ProductOverView';
 import Cart from './components/pages/Cart/Cart';
+import Order from './components/pages/Order/Order';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
         <Route path="/account" element={<Account />} />
         <Route path="/product/:id" element={<ProductOverView />} />
         <Route path="/cart/:userId" element={<Cart />} />
+        <Route path="/order/:userId" element={<Order/>} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
