@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Container,
-  Grid,
+  Flex,
   Image,
   Text,
   Button,
@@ -115,9 +115,9 @@ const ProductOverView = () => {
   return (
     <Box w="100%" p={4}>
       <Container maxW="70%" mt={8}>
-        <Grid templateColumns="repeat(2, 1fr)" gap={6}>
+        <Flex direction={{ base: "column", md: "row" }} gap={6}>
           {/* Column 1 - Image Carousel */}
-          <Box gridColumn="1 / 2">
+          <Box w={{ base: "100%", md: "50%" }}>
             <Image
               src={hovered ? product.images[1].url : product.images[0].url}
               alt={product.name}
@@ -128,7 +128,7 @@ const ProductOverView = () => {
           </Box>
 
           {/* Column 2 - Product Details */}
-          <Box gridColumn="2 / 3">
+          <Box w={{ base: "100%", md: "50%" }}>
             <VStack align="flex-start" spacing={4}>
               <Text fontSize="2xl" fontWeight="semibold">
                 {product.name}
@@ -183,7 +183,7 @@ const ProductOverView = () => {
               <Text color="gray.600">{product.description}</Text>
             </VStack>
           </Box>
-        </Grid>
+        </Flex>
       </Container>
     </Box>
   );

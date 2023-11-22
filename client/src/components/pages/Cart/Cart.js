@@ -131,16 +131,29 @@ const Cart = () => {
   };
 
   return (
-    <Box w="100%" maxW="70%" mx="auto">
-      <Flex>
+    <Box w="100%" maxW={{ base: "100%", md: "70%" }} mx="auto">
+      <Flex direction={{ base: "column", md: "row" }}>
         {/* Column 1 */}
-        <Box flex="2">
+        <Box flex={{ base: "none", md: "2" }}>
           {cartItems && cartItems.map((item) => (
-            <Flex key={item.id} mb={4} p={4} borderWidth="1px" borderRadius="md" align="center">
+            <Flex
+              key={item.id}
+              mb={4}
+              p={4}
+              borderWidth="1px"
+              borderRadius="md"
+              direction={{ base: "column", md: "row" }}
+              align="center"
+            >
               {/* Subcolumn 1: Image */}
-              <Box mr={4}>
-                <Image boxSize="200px" src={item.product.images[2].url} alt={item.productId} objectFit="cover" />
-              </Box>
+              <Box mb={{ base: 4, md: 0 }} mr={{ base: 0, md: 4 }}>
+              <Image
+                boxSize={{ base: "100px", md: "200px" }}
+                src={item.product.images[2].url}
+                alt={item.productId}
+                objectFit="cover"
+              />
+            </Box>
               {/* Subcolumn 2: Product Details */}
               <VStack align="start" flex="1">
                 <Text fontWeight="bold">{item.product.name}</Text>
@@ -191,7 +204,7 @@ const Cart = () => {
         </Box>
 
         {/* Column 2: Cart Price Summary and Order Button */}
-        <Box flex="1" pl={4}>
+        <Box flex={{ base: "none", md: "1" }} pl={{ base: "0", md: "4" }}>
           <VStack spacing={4}>
             <Box p={4} borderWidth="1px" borderRadius="md" w="100%">
               <Text fontSize="lg">Cart Value:</Text>

@@ -27,7 +27,7 @@ const SingleProduct = ({ product }) => {
   return (
     <Link to={`/product/${product.id}`}>
       <Box
-        mx="auto"
+        mx={{ base: "auto", md: 2 }}
         my={4}
         w="100%"
         borderWidth="1px"
@@ -43,9 +43,9 @@ const SingleProduct = ({ product }) => {
           <Image src={product.images[0].url} alt={product.name} />
         )}
 
-        <Box p="6">
+        <Box p={{ base: 2, md: 6 }}>
           <Box d="flex" alignItems="baseline" justifyContent="space-between">
-            <Text fontSize="2xl" fontWeight="semibold" lineHeight="tight">
+            <Text fontSize={{ base: "xl", md: "2xl" }} fontWeight="semibold" lineHeight="tight">
               {product.name}
             </Text>
             <Badge borderRadius="full" px="2" colorScheme="teal">
@@ -53,7 +53,7 @@ const SingleProduct = ({ product }) => {
             </Badge>
           </Box>
 
-          <Text mt="2" color="gray.600">
+          <Text mt="2" color="gray.600" fontSize={{ base: "sm", md: "md" }}>
             {product.shortDescription}
           </Text>
 

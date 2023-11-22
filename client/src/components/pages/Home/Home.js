@@ -40,7 +40,14 @@ const Home = () => {
           {isLoading ? (
             <Spinner size="xl" />
           ) : (
-            <Grid templateColumns="repeat(auto-fill, minmax(20%, 1fr))" gap={6}>
+            <Grid 
+              templateColumns={{
+                base: "repeat(auto-fill, minmax(50%, 1fr))",
+                md: "repeat(auto-fill, minmax(33%, 1fr))",
+                lg: "repeat(auto-fill, minmax(20%, 1fr))"
+              }}
+              gap={6}
+            >
               {products.map((product) => (
                 <SingleProduct key={product.id} product={product} />
               ))}
