@@ -95,6 +95,7 @@ model Order {
   city         String
   address      String
   country      String
+  createdAt    DateTime   @default(now())
 }
 
 model ProductOrder {
@@ -105,4 +106,5 @@ model ProductOrder {
   productId    Int
   size         String
   quantity     Int
+  comments     String?
 }

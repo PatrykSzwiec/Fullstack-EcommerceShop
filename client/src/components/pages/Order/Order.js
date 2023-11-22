@@ -55,7 +55,7 @@ const Order = () => {
           productId: item.productId,
           size: item.size,
           quantity: item.quantity,
-          comments: item.comments || '',
+          comments: item.comments,
         })),
         totalPrice,
       };

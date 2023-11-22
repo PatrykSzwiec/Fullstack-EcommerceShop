@@ -41,6 +41,7 @@ export class OrderService {
             city,
             address,
             country,
+            createdAt: new Date(),
           },
         });
 

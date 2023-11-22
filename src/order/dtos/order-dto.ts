@@ -14,4 +14,5 @@ export class CreateOrderDTO {
   city: string;
   address: string;
   country: string;
+  createdAt: Date;
 }
