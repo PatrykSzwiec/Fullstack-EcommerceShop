@@ -55,6 +55,7 @@ const Order = () => {
           productId: item.productId,
           size: item.size,
           quantity: item.quantity,
+          comments: item.comments || '',
         })),
         totalPrice,
       };
@@ -109,45 +110,56 @@ const Order = () => {
   const calculateItemTotal = (price, quantity) => price * quantity;
 
   return (
-      <Box w="100%" maxW="70%" mx="auto" p={4}>
-      <VStack spacing={4} align="stretch">
-        <Box borderWidth="1px" borderRadius="md" p={4}>
-          {/* Display cart items */}
-          {cartItems.length > 0 ? (
-            <Wrap spacing={4} justify="space-between">
-              {cartItems.map((item, index) => (
-                <WrapItem
-                  key={item.id}
-                  p={2}
-                  borderWidth="1px"
-                  borderRadius="md"
-                  width="calc(25% - 8px)"
-                  maxWidth="calc(25% - 8px)"
-                >
-                  <Box display="flex" alignItems="center">
-                    <Image
-                      boxSize="150px"
-                      src={item.product.images[0].url}
-                      alt={item.productId}
-                      objectFit="cover"
-                      mr={4}
-                    />
-                    <VStack align="start" flex="1">
-                      <Text fontWeight="bold" fontSize="lg">{item.product.name}</Text>
-                      <Text>Size: {item.size}</Text>
-                      <Text>Quantity: {item.quantity}</Text>
-                      <Text>Single Price: {item.product.price}$</Text>
-                      <Text>{`Total Price: $${calculateItemTotal(item.product.price, item.quantity)}`}</Text>
-                    </VStack>
-                  </Box>
-                </WrapItem>
-              ))}
-            </Wrap>
-          ) : (
-            <Text>No items in the cart.</Text>
-          )}
-        </Box>
-        <Box borderWidth="1px" borderRadius="md" p={4}>
+    <Box w="100%" maxW="90%" mx="auto" p={4}>
+    <VStack spacing={4} align="stretch">
+      <Box borderWidth="1px" borderRadius="md" p={4}>
+        {/* Display cart items */}
+        {cartItems.length > 0 ? (
+          <Wrap spacing={4} align="center" justify="center">
+            {cartItems.map((item, index) => (
+              <WrapItem
+                key={item.id}
+                p={2}
+                borderWidth="1px"
+                borderRadius="md"
+                width="90%"
+                maxWidth="90%"
+              >
+                {/* Adjusted content to fit better on mobile */}
+                <Box display="flex" flexDirection="column" alignItems="center">
+                  <Image
+                    boxSize="100px"
+                    src={item.product.images[0].url}
+                    alt={item.productId}
+                    objectFit="cover"
+                    mb={2}
+                  />
+                  <Text fontWeight="bold" fontSize="md" textAlign="center">
+                    {item.product.name}
+                  </Text>
+                  <Text fontSize="sm" textAlign="center">
+                    Size: {item.size} | Quantity: {item.quantity}
+                  </Text>
+                  <Text fontSize="sm" textAlign="center">
+                    Price: ${item.product.price}
+                  </Text>
+                  <Text fontSize="sm" textAlign="center">
+                    Total: ${calculateItemTotal(item.product.price, item.quantity)}
+                  </Text>
+                  <Text fontSize="sm" textAlign="center">
+                    Comment: {item.comments}
+                  </Text>
+                </Box>
+              </WrapItem>
+            ))}
+          </Wrap>
+        ) : (
+          <Text textAlign="center">No items in the cart.</Text>
+        )}
+      </Box>
+      <Box borderWidth="1px" borderRadius="md" p={4} width="100%">
+        {/* Form for contact details */}
+        <VStack spacing={4} align="stretch">
           {/* Form for contact details */}
           <FormControl id="name">
             <FormLabel>Name</FormLabel>
@@ -212,10 +224,11 @@ const Order = () => {
           <Button colorScheme="teal" onClick={handleSubmit}>
             Place Order
           </Button>
-        </Box>
-      </VStack>
-    </Box>
-  );
+        </VStack>
+      </Box>
+    </VStack>
+  </Box>
+);
 };
 
 export default Order;

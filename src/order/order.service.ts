@@ -31,6 +31,7 @@ export class OrderService {
                 productId: item.productId,
                 size: item.size,
                 quantity: item.quantity,
+                comments: item.comments,
               })),
             },
             totalPrice,
@@ -65,5 +66,4 @@ export class OrderService {
     });
   }
 
-  // Additional functions for retrieving order details, clearing the cart, etc.
 }

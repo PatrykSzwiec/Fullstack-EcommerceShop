@@ -80,6 +80,7 @@ model CartItem {
   productId  Int
   size       String
   quantity   Int
+  comments   String?
 }
 
 // ORDER SCHEMAS

@@ -17,9 +17,10 @@ import { API_URL } from '../../../config';
 import getUserIdFromToken from '../../utils/getUserIdFromToken';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
   const toast = useToast();
+  const [cartItems, setCartItems] = useState([]);
+  const [commentsToUpdate, setCommentsToUpdate] = useState({});
 
   const fetchCartItems = async () => {
     try {
@@ -56,7 +57,7 @@ const Cart = () => {
 
 
   const handleAmountChange = async (cartItemId, newQuantity) => {
-    console.log('Updating cart item:', cartItemId, 'New quantity:', newQuantity);
+    //console.log('Updating cart item:', cartItemId, 'New quantity:', newQuantity);
     try {
       const token = localStorage.getItem('accessToken');
       if (!token) {
@@ -80,6 +81,11 @@ const Cart = () => {
     } catch (error) {
       console.error('Error updating item quantity:', error);
     }
+  };
+
+  const handleCommentChange = (cartItemId, newComment) => {
+    const updatedComments = { ...commentsToUpdate, [cartItemId]: newComment };
+    setCommentsToUpdate(updatedComments);
   };
 
   const handleRemoveItem = async (cartItemId) => {
@@ -124,10 +130,35 @@ const Cart = () => {
     }, 0);
   };
 
-  const handleOrderClick = () => {
-    const userId = getUserIdFromToken();
-    const total = calculateTotalPrice()
-    navigate(`/order/${userId}`, { state: { cartItems, cartValue: total } });
+  const handleOrderClick = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      if (!token) {
+        return;
+      }
+
+      for (const [cartItemId, newComment] of Object.entries(commentsToUpdate)) {
+        await handleCommentChange(cartItemId, newComment);
+
+        // Update comments for each cart item before proceeding to order
+        await fetch(`${API_URL}/cart/updateComment/${cartItemId}`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ newComment }),
+        });
+
+      }
+
+      const userId = getUserIdFromToken();
+      const total = calculateTotalPrice();
+      navigate(`/order/${userId}`, { state: { cartItems, cartValue: total } });
+
+    } catch (error) {
+      console.error('Error updating item comments:', error);
+    }
   };
 
   return (
@@ -135,7 +166,7 @@ const Cart = () => {
       <Flex direction={{ base: "column", md: "row" }}>
         {/* Column 1 */}
         <Box flex={{ base: "none", md: "2" }}>
-          {cartItems && cartItems.map((item) => (
+          {cartItems && cartItems.map((item, index) => (
             <Flex
               key={item.id}
               mb={4}
@@ -197,6 +228,17 @@ const Cart = () => {
                   variant="ghost"
                   colorScheme="red"
                   size="sm"
+                />
+                <Input
+                  type="text"
+                  placeholder="Add Comments"
+                  value={item.comments || ''}
+                  onChange={(e) => {
+                    const updatedCartItems = [...cartItems];
+                    updatedCartItems[index].comments = e.target.value;
+                    setCartItems(updatedCartItems);
+                    handleCommentChange(item.id, item.comments);
+                  }}
                 />
               </Box>
             </Flex>

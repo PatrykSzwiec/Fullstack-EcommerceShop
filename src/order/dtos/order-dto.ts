@@ -5,6 +5,7 @@ export class CreateOrderDTO {
     productId: number,
     size: string,
     quantity: number,
+    comments?: string,
   }[];
   totalPrice: number;
   name: string;
